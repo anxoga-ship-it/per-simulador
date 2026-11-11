@@ -1,0 +1,342 @@
+{
+"0": [
+"d",
+"Cruce: el que ve al otro por estribor se aparta, evitando cortarle la proa."
+],
+"1": [
+"c",
+"Arrastre: verde sobre blanca. Sin arrancada, no lleva costados ni alcance."
+],
+"2": [
+"d",
+"El velero se aparta de sin gobierno, maniobra restringida y pesca."
+],
+"3": [
+"c",
+"Alcanza quien de noche solo ve la luz de alcance del otro."
+],
+"4": [
+"c",
+"Maniobra restringida: roja, blanca, roja."
+],
+"5": [
+"c",
+"Tres cortas: estoy dando atrás."
+],
+"6": [
+"c",
+"112,5° desde la proa. El farol combinado se permite por debajo de 20 m, no de 50."
+],
+"7": [
+"b",
+"Práctico: blanca arriba, roja abajo."
+],
+"8": [
+"d",
+"Lo tenemos por babor: él nos ve por estribor y es quien se aparta. Nosotros mantenemos rumbo y velocidad."
+],
+"9": [
+"d",
+"Fondeado: blanca a proa y otra a popa más baja."
+],
+"10": [
+"a",
+"Los de menos de 20 m pueden usar las vías de circulación y la zona de navegación costera."
+],
+"11": [
+"c",
+"Maniobras amplias, que se perciban bien. Nada de pequeños cambios sucesivos."
+],
+"12": [
+"b",
+"A 10 nudos no le vale la exención de 7 m/7 nudos: como menor de 12 m, blanca todo horizonte + costados."
+],
+"13": [
+"d",
+"Señal de niebla a proa del través: reducir a la mínima de gobierno (y quitar arrancada si hace falta)."
+],
+"14": [
+"c",
+"Pescar con caña no es «buque dedicado a la pesca»: es un buque en navegación más."
+],
+"15": [
+"c",
+"Vemos su verde por nuestro babor: él nos tiene por estribor y debe apartarse. Seguimos a rumbo."
+],
+"16": [
+"c",
+"En canales angostos, lo más cerca posible del límite de estribor."
+],
+"17": [
+"a",
+"Sigue a rumbo quien ve al otro por babor."
+],
+"18": [
+"d",
+"Viento por la misma banda: se aparta el de barlovento."
+],
+"19": [
+"c",
+"Motor y vela: se aparta el de motor."
+],
+"20": [
+"a",
+"Señal de niebla a proa del través: velocidad mínima de gobierno o suprimir arrancada."
+],
+"21": [
+"c",
+"Misma banda: barlovento se aparta."
+],
+"23": [
+"a",
+"Costados sin tope = velero (o remos): el buque de motor se aparta."
+],
+"24": [
+"a",
+"Sigue a rumbo quien ve al otro por babor."
+],
+"25": [
+"d",
+"Ni los veleros, ni los menores de 20 m, ni los pesqueros estorbarán a quien solo puede navegar dentro del canal."
+],
+"26": [
+"d",
+"Desde más de 22,5° a popa del través: de noche solo ve la luz de alcance."
+],
+"27": [
+"a",
+"115° está a popa del sector de 112,5°: el velero alcanza y debe apartarse."
+],
+"28": [
+"c",
+"Dos cortas: caigo a babor."
+],
+"29": [
+"d",
+"Menores de 20 m, en ruta hacia o desde un punto de la zona costera, o para evitar un peligro."
+],
+"30": [
+"d",
+"Entre veleros se decide por el viento (Regla 12)."
+],
+"31": [
+"a",
+"Un buque de motor de frente a un velero: se aparta el de motor."
+],
+"32": [
+"c",
+"Cruce: buques a motor que se ven a proa de 22,5° a popa del través (no es alcance ni vuelta encontrada)."
+],
+"33": [
+"c",
+"Lo más perpendicular posible."
+],
+"34": [
+"c",
+"Dos cortas: caigo a babor."
+],
+"35": [
+"c",
+"Dos bolas: sin gobierno."
+],
+"36": [
+"b",
+"Roja sobre blanca: pesquero (no de arrastre)."
+],
+"37": [
+"c",
+"112,5° desde la proa hacia popa del través."
+],
+"38": [
+"c",
+"Corta-larga-corta: aviso opcional del buque fondeado a quien se acerca."
+],
+"39": [
+"b",
+"Por la naturaleza de su trabajo. Por avería es «sin gobierno»."
+],
+"40": [
+"c",
+"Solo cuando el velero alcanza al de motor. En un cruce, el de motor se aparta siempre del velero (Regla 18)."
+],
+"41": [
+"b",
+"Los veleros nunca llevan luz de tope."
+],
+"42": [
+"c",
+"Falsa: los cambios pequeños y sucesivos están desaconsejados."
+],
+"43": [
+"a",
+"Velero = navegando a vela sin usar el motor."
+],
+"44": [
+"c",
+"Duda: al menos cinco cortas y rápidas."
+],
+"45": [
+"c",
+"115° está a más de 112,5°: situación de alcance."
+],
+"46": [
+"a",
+"Vemos su roja por estribor: nosotros nos apartamos."
+],
+"47": [
+"c",
+"Buque a proa del través (50° Br): evitar caer a babor."
+],
+"48": [
+"a",
+"Por popa: luz de alcance + blanca sobre roja."
+],
+"49": [
+"d",
+"Misma banda: barlovento se aparta."
+],
+"50": [
+"d",
+"Menores de 20 m y veleros no estorbarán a los de motor en la vía de circulación."
+],
+"51": [
+"a",
+"Dos conos por los vértices: pesca, de arrastre o no."
+],
+"52": [
+"c",
+"Lo más cerca posible del límite de estribor."
+],
+"53": [
+"a",
+"Demora constante = riesgo de abordaje."
+],
+"54": [
+"b",
+"155° Er está a popa del través: evitar caer hacia él, es decir, a estribor."
+],
+"55": [
+"a",
+"Bandas contrarias: se aparta el que lo recibe por babor."
+],
+"56": [
+"b",
+"Tope y ambos costados por la proa: vuelta encontrada con riesgo."
+],
+"57": [
+"c",
+"El de motor se aparta del velero."
+],
+"58": [
+"a",
+"Tres cortas: doy atrás."
+],
+"59": [
+"c",
+"Cuando sea evidente que el otro no maniobra."
+],
+"60": [
+"c",
+"De 12 m o más: pito. De 20 m o más, además campana; de 100 m o más, además gong."
+],
+"61": [
+"c",
+"Límite de estribor."
+],
+"62": [
+"c",
+"Cono ▼: vela + motor; es un buque de propulsión mecánica."
+],
+"63": [
+"b",
+"110° es menos de 112,5°: es un cruce, no un alcance."
+],
+"64": [
+"d",
+"Solo los menores de 7 m están exentos (fuera de canales y fondeaderos)."
+],
+"65": [
+"b",
+"Buque a proa del través por radar: evitar caer a babor."
+],
+"66": [
+"c",
+"Da igual que sea mercante o de recreo: se aparta quien ve al otro por estribor."
+],
+"67": [
+"b",
+"Los de motor, con las máquinas listas para maniobrar."
+],
+"68": [
+"b",
+"Bandas contrarias: se aparta el que lo recibe por babor."
+],
+"69": [
+"b",
+"Alcance: 135°."
+],
+"70": [
+"a",
+"Cinco cortas: duda o no entiende nuestra maniobra."
+],
+"71": [
+"c",
+"Incorrecta: la demora constante indica que SÍ hay riesgo."
+],
+"72": [
+"c",
+"Los portaaviones en operaciones con aeronaves. Los pesqueros no y no todos los remolques."
+],
+"73": [
+"d",
+"Vela + motor = buque de motor de 15 m: tope, costados y alcance."
+],
+"74": [
+"a",
+"Menos de 50 m: basta una luz de tope (la segunda es opcional)."
+],
+"75": [
+"a",
+"El que alcanza se aparta, sea cual sea el viento."
+],
+"76": [
+"a",
+"Vuelta encontrada: ambos caen a estribor."
+],
+"77": [
+"c",
+"Sí, si el alcanzado no tiene que maniobrar."
+],
+"78": [
+"d",
+"Ninguna: de día con visibilidad reducida hay que llevar luces, sin estar a la vista no rige la jerarquía y la señal se emite siempre."
+],
+"79": [
+"d",
+"El dispositivo no cambia las reglas de cruce: se aparta quien ve al otro por estribor."
+],
+"80": [
+"d",
+"107° está a proa de 112,5°: es un cruce."
+],
+"81": [
+"a",
+"De la puesta a la salida del sol y con visibilidad reducida."
+],
+"82": [
+"d",
+"Humo naranja: socorro."
+],
+"83": [
+"a",
+"130° Er: el velero viene alcanzando y se aparta."
+],
+"84": [
+"c",
+"Cinco cortas: no entiende las intenciones del otro."
+],
+"85": [
+"a",
+"Cruce: se aparta quien ve al otro por estribor."
+]
+}
