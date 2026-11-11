@@ -355,7 +355,7 @@ const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function weight(q){ const st=S.q[q.id]; if(!st) return Math.random()*0.5; return st.s - st.f*1.5 + (st.last===0? -2:0) + Math.random()*1.5; }
 function pick(pool,n){ return pool.slice().sort((x,y)=>weight(x)-weight(y)).slice(0,n); }
-function record(q,ok){ const st=S.q[q.id]||(S.q[q.id]={s:0,f:0}); st.s++; if(!ok) st.f++; st.last= ok?1:0; }
+function record(q,ok){ const st=S.q[q.id]||(S.q[q.id]={s:0,f:0}); st.s++; if(!ok) st.f++; st.last= ok?1:0; st.ts=Date.now(); }
 function qsrc(q){
   if(q.k==="U") return "Pregunta añadida por ti"+(q.src?" · "+q.src:"");
   if(q.k==="A") return "Examen oficial PER Andalucía (IAD) · respuesta resuelta con explicación";
@@ -409,11 +409,17 @@ function startRun(o){
 /* ---------- Examen ---------- */
 let examCfg={mode:"mix",noChart:false,test:""};
 function buildMix(noChart){
+  // Por tema: como mucho 1 de cada 3 sale de tus fallos; el resto, preguntas nuevas; si no quedan, las vistas hace más tiempo
   const qs=[];
   for(const t of Object.keys(DIST).map(Number)){
     if(t===11&&noChart) continue;
-    const pool=DATA.Q.filter(q=>q.t===t && q.k==="D");
-    qs.push(...shuffle(pick(pool,DIST[t])).sort(()=>0));
+    const pool=DATA.Q.filter(q=>q.t===t && q.k==="D"), n=DIST[t];
+    const fails=shuffle(pool.filter(q=>S.q[q.id]&&S.q[q.id].last===0));
+    const fresh=shuffle(pool.filter(q=>!S.q[q.id]));
+    const seen=pool.filter(q=>S.q[q.id]&&S.q[q.id].last!==0).sort((x,y)=>(S.q[x.id].ts||0)-(S.q[y.id].ts||0));
+    const take=fails.slice(0,Math.max(1,Math.floor(n/3)));
+    for(const q of fresh.concat(seen, fails.slice(take.length))){ if(take.length>=n) break; take.push(q); }
+    qs.push(...shuffle(take));
   }
   return qs;
 }
@@ -515,14 +521,14 @@ function renderResult(){
 /* ---------- Pantallas ---------- */
 function renderExamHome(){
   const tests=DATA.T.filter(t=>t.n>=40);
-  if(!examCfg.test) examCfg.test=tests[0].name;
+  if(!examCfg.test){ const done=new Set(S.h.map(h=>h.m)); const nx=tests.find(t=>![...done].some(m=>m.includes(t.name))); examCfg.test=(nx||tests[0]).name; }
   const dist=Object.keys(DIST).map(Number).map(t=>`<div><span>${TN[t]}</span><b class="${LIMIT[t]?"lim":""}">${DIST[t]}${LIMIT[t]?" · máx "+LIMIT[t]+" fallos":""}</b></div>`).join("");
   $("#view").innerHTML=`<div class="stack">
    <div class="panel">
      <h2>Simular examen oficial</h2>
      <div class="seg" role="group"><button data-m="mix" aria-pressed="${examCfg.mode==="mix"}">Examen mezclado</button><button data-m="real" aria-pressed="${examCfg.mode==="real"}">Examen real de una convocatoria</button></div>
      ${examCfg.mode==="mix"?`<p class="muted">45 preguntas de exámenes reales de la Marina Mercante (2019–2026), con el reparto oficial por temas. Elige primero las que aún no has visto y las que fallas.</p>`
-       :`<label class="muted" for="selTest">Convocatoria y modelo (tal cual se examinó, en su orden):</label><select id="selTest">${tests.map(t=>`<option ${t.name===examCfg.test?"selected":""}>${esc(t.name)}</option>`).join("")}</select>`}
+       :`<label class="muted" for="selTest">Convocatoria y modelo (tal cual se examinó, en su orden). Te propongo el siguiente que aún no has hecho:</label><select id="selTest">${tests.map(t=>`<option ${t.name===examCfg.test?"selected":""}>${esc(t.name)}</option>`).join("")}</select>`}
      <label class="check" for="noChart"><input type="checkbox" id="noChart" ${examCfg.noChart?"checked":""}><span><b>Sin carta de navegación</b><br><span class="muted">Quita las 4 preguntas de carta (41 preguntas, 80 min). Para aprobar exige 11 fallos o menos, dejando margen para 2 fallos en la carta.</span></span></label>
      <div class="row"><button class="btn" id="go">Empezar examen · ${examCfg.noChart?"80":"90"} min</button></div>
    </div>
