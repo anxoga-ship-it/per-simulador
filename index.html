@@ -460,6 +460,13 @@ function startCarta(){
   const o=mk(); o.again=mk; startRun(o);
 }
 
+/* ---------- Convocatoria visible antes de responder ---------- */
+function convOf(q){ return q.k==="D"&&q.s ? [...new Set(q.s.map(x=>x.split(" · ")[0]))] : []; }
+function convLine(q){ const c=convOf(q); if(!c.length) return "";
+  const yrs=[...new Set(c.map(x=>x.split(" ").pop()))];
+  const curso=/año en curso|del año|año actual/i.test(q.q) ? `<p class="chart"><b>«Año en curso» = ${yrs.join(" o ")}</b>, el año del examen. Calcula la declinación para ese año.</p>` : "";
+  return `<span class="src">Examen Marina Mercante · ${esc(c.join(", "))}</span>${curso}`; }
+
 /* ---------- Ejecutar (examen y práctica) ---------- */
 function renderRun(){
   const r=run, q=r.qs[r.i], n=r.qs.length, a=r.ans[r.i], shown=r.shown[r.i];
@@ -482,7 +489,7 @@ function renderRun(){
   $("#view").innerHTML=`
    <div class="qbar"><span class="ttl">${esc(r.title)}</span><span class="figs muted">${answered}/${n}</span><span class="clock" id="clock">--:--</span>
      <button class="btn ghost small" id="submit2">${r.immediate?"Terminar":"Entregar"}</button></div>
-   <article class="qcard"><span class="qnum">PREGUNTA ${r.i+1} DE ${n} · ${esc(q.t==="L"?"Luces y marcas · "+TOPICS[q.lt]:q.t==="B"?"Boyas y marcas":TN[q.t]).toUpperCase()}</span>
+   <article class="qcard"><span class="qnum">PREGUNTA ${r.i+1} DE ${n} · ${esc(q.t==="L"?"Luces y marcas · "+TOPICS[q.lt]:q.t==="B"?"Boyas y marcas":TN[q.t]).toUpperCase()}</span>${convLine(q)}
      <p class="qtext">${esc(q.q)}</p>${chartNote}${lightFig(q)}<div class="opts">${opts}</div>${fb}</article>
    <div class="nav"><button class="btn ghost" id="prev" ${r.i===0?"disabled":""}>Anterior</button>${next}</div>
    <div class="dots">${dots}</div>
