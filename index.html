@@ -448,6 +448,18 @@ function startExam(){
   startRun({kind:"exam",title:title+(noChart?" · sin carta":""),qs,noChart,minutes:noChart?80:90,immediate:false,real:examCfg.mode==="real"});
 }
 
+/* ---------- Solo carta ---------- */
+function isTide(q){ return /marea|anuario|pleamar|bajamar/i.test(q.q+" "+q.o.join(" ")); }
+let cartaCfg={n:4,tide:false};
+function startCarta(){
+  const n=cartaCfg.n;
+  const mk=()=>{ const pool=DATA.Q.filter(q=>q.t===11 && q.k==="D" && (cartaCfg.tide||!isTide(q)));
+    const qs=shuffle(pick(pool,n)).map(q=>Object.assign({},q,{_o:q}));
+    return n===4 ? {kind:"exam",title:"Bloque de carta",qs,noChart:false,minutes:25,immediate:false}
+                 : {kind:"practice",tab:"exam",title:"Práctica de carta",qs,immediate:true}; };
+  const o=mk(); o.again=mk; startRun(o);
+}
+
 /* ---------- Ejecutar (examen y práctica) ---------- */
 function renderRun(){
   const r=run, q=r.qs[r.i], n=r.qs.length, a=r.ans[r.i], shown=r.shown[r.i];
@@ -466,7 +478,7 @@ function renderRun(){
   let next;
   if(r.immediate) next=!shown?`<button class="btn" id="check" ${a===null?"disabled":""}>Comprobar</button>`:(last?`<button class="btn" id="submit">Ver resumen</button>`:`<button class="btn" id="next">Siguiente</button>`);
   else next=last?`<button class="btn" id="submit">Entregar examen</button>`:`<button class="btn" id="next">Siguiente</button>`;
-  const chartNote = q.t===11 ? `<p class="chart">Necesitas la carta del Estrecho de Gibraltar, transportador y compás (y el anuario de mareas si lo pide).</p>` : "";
+  const chartNote = q.t===11 ? (isTide(q) ? `<p class="chart"><b>Pregunta de mareas:</b> necesitas el Anuario de mareas de ese puerto y fecha. El examen publicado no lo incluye, así que solo puedes resolverla si tienes el anuario.</p>` : `<p class="chart">Necesitas la carta del Estrecho de Gibraltar, transportador, compás y regla.</p>`) : "";
   $("#view").innerHTML=`
    <div class="qbar"><span class="ttl">${esc(r.title)}</span><span class="figs muted">${answered}/${n}</span><span class="clock" id="clock">--:--</span>
      <button class="btn ghost small" id="submit2">${r.immediate?"Terminar":"Entregar"}</button></div>
@@ -524,7 +536,7 @@ function renderResult(){
     <div class="row"><button class="btn" id="again">${r.kind==="exam"?"Otro examen":"Repetir con otras"}</button>${wrong.length?`<button class="btn ghost" id="redo">Practicar estos ${wrong.length} fallos</button>`:""}<button class="btn ghost" id="home">Volver</button></div>
     <section class="section"><div class="row" style="justify-content:space-between"><h2>Revisión</h2><div class="seg"><button aria-pressed="${revFilter==="ko"}" data-f="ko">Solo fallos</button><button aria-pressed="${revFilter==="all"}" data-f="all">Todas</button></div></div><div class="rev">${items}</div></section></div>`;
   window.scrollTo(0,0);
-  $("#again").onclick=()=> r.kind==="exam"? startExam() : startRun(Object.assign({},r.again(),{}));
+  $("#again").onclick=()=>{ if(r.again){ const o=r.again(); o.again=r.again; return startRun(o); } if(r.kind==="exam") return startExam(); };
   $("#home").onclick=()=>{ run=null; setTab(r.kind==="exam"?"exam":r.tab||"practice"); };
   const rd=$("#redo"); if(rd) rd.onclick=()=>startRun({kind:"practice",title:"Repaso de fallos",qs:shuffle(wrong).map(prep),immediate:true,tab:r.tab||"practice",again:()=>({kind:"practice",title:"Repaso de fallos",qs:shuffle(wrong).map(prep),immediate:true})});
   document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{revFilter=b.dataset.f;renderResult();});
@@ -544,6 +556,14 @@ function renderExamHome(){
      <label class="check" for="noChart"><input type="checkbox" id="noChart" ${examCfg.noChart?"checked":""}><span><b>Sin carta de navegación</b><br><span class="muted">Quita las 4 preguntas de carta (41 preguntas, 80 min). Para aprobar exige 11 fallos o menos, dejando margen para 2 fallos en la carta.</span></span></label>
      <div class="row"><button class="btn" id="go">Empezar examen · ${examCfg.noChart?"80":"90"} min</button></div>
    </div>
+   <div class="panel">
+     <h2>Solo carta de navegación</h2>
+     <p class="muted">Para cuando tengas la carta delante. ${DATA.Q.filter(q=>q.t===11&&!isTide(q)).length} preguntas de carta${DATA.Q.filter(q=>q.t===11&&isTide(q)).length?` y ${DATA.Q.filter(q=>q.t===11&&isTide(q)).length} de mareas`:""}.</p>
+     <div class="seg" role="group">${[[4,"4 · como en el examen"],[10,"10"],[20,"20"]].map(([n,l])=>`<button data-cn="${n}" aria-pressed="${cartaCfg.n===n}">${l}</button>`).join("")}</div>
+     <label class="check" for="cTide"><input type="checkbox" id="cTide" ${cartaCfg.tide?"checked":""}><span><b>Incluir preguntas de mareas</b><br><span class="muted">Solo si tienes el Anuario de mareas: los exámenes publicados no lo traen.</span></span></label>
+     <p class="muted">${cartaCfg.n===4?"Bloque de examen: corrección al final, apto con 2 fallos como máximo, 25 min.":"Corrección pregunta a pregunta, sin límite de tiempo."}</p>
+     <div class="row"><button class="btn" id="goCarta">Empezar carta</button></div>
+   </div>
    <section class="section"><h3>Cómo es el examen real</h3><div class="dist">${dist}</div>
      <p class="note">Aprobado: 32 aciertos de 45 (máximo 13 fallos), sin pasar de 2 fallos en balizamiento, 5 en RIPA y 2 en carta. 90 minutos. Los fallos no restan; las preguntas en blanco cuentan como fallo.</p></section>
    ${histHTML(S.h.filter(h=>h.p!==null))}
@@ -552,6 +572,9 @@ function renderExamHome(){
   const sel=$("#selTest"); if(sel) sel.onchange=()=>examCfg.test=sel.value;
   $("#noChart").onchange=e=>{examCfg.noChart=e.target.checked;renderExamHome();};
   $("#go").onclick=startExam;
+  document.querySelectorAll("[data-cn]").forEach(b=>b.onclick=()=>{cartaCfg.n=+b.dataset.cn;renderExamHome();});
+  $("#cTide").onchange=e=>{cartaCfg.tide=e.target.checked;};
+  $("#goCarta").onclick=startCarta;
 }
 function histHTML(h){ if(!h.length) return ""; return `<section class="section"><h3>Últimos intentos</h3><div class="hist">${h.slice(0,8).map(x=>{const d=new Date(x.d);
   return `<div class="hrow"><span>${esc(x.m)}</span><span class="figs">${x.n-x.f}/${x.n}</span>${x.p===null?`<span class="figs">${d.getDate()}/${d.getMonth()+1}</span>`:`<span class="tag ${x.p?"ok":"ko"}">${x.p?"APTO":"NO APTO"}</span>`}</div>`;}).join("")}</div></section>`; }
