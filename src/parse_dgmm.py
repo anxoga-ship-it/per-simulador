@@ -37,7 +37,7 @@ TOPIC_HDR = [
  (r'^balizamiento', 5), (r'^reglamento', 6), (r'^(ripa|reglas? )', 6), (r'^maniobra', 7), (r'^emergencias', 8),
  (r'^meteorolog', 9), (r'^teor[ií]a de (la )?navegaci', 10), (r'^carta de navegaci', 11),
 ]
-NOISE = re.compile(r'^(\d{1,2}$|Y AGENDA URBANA|AGENDA URBANA|SUBDIRECCI|ÁREA FUNCIONAL|AREA FUNCIONAL|MINISTERIO|SECRETAR|DIRECCI[ÓO]N GENERAL|DE LA MARINA|Y MOVILIDAD|DE TRANSPORTES|MARINA MERCANTE|P[áa]gina \d|-\s*\d+\s*-$|\d+\s*/\s*\d+$|C/ RUIZ|CORREO|titulosderecreo|28071)', re.I)
+NOISE = re.compile(r'^(DE TRANSPORTE,? |TRANSPORTE Y MOVILIDAD|\d{1,2}$|Y AGENDA URBANA|AGENDA URBANA|SUBDIRECCI|ÁREA FUNCIONAL|AREA FUNCIONAL|MINISTERIO|SECRETAR|DIRECCI[ÓO]N GENERAL|DE LA MARINA|Y MOVILIDAD|DE TRANSPORTES|MARINA MERCANTE|P[áa]gina \d|-\s*\d+\s*-$|\d+\s*/\s*\d+$|C/ RUIZ|CORREO|titulosderecreo|28071)', re.I)
 
 def txt(name, layout=False):
     args = ['pdftotext'] + (['-layout'] if layout else []) + [SRC + name + '.pdf', '-']
@@ -56,10 +56,12 @@ def sections(lines, answers=False):
         if m:
             k = m.group(1).upper()
             typ = 'CY' if k.startswith('CAPIT') else 'PY' if 'YATE' in k else 'PER' if 'EMBARCACIONES' in k else 'PNB'
-            lib = False; cur = None; continue
+            lib = bool(re.search(r'PNB\s*LIBERADO|Con PNB', l, re.I)); cur = None; continue
         if typ is None and re.search(r'EMBARCACIONES\s*$', l): pass
         if re.search(r'PNB\s*Liberado|\(Con PNB|Con PNB', l, re.I):
-            lib = True; continue
+            lib = True
+            if cur is not None and not any(x.strip() for x in cur['lines']): cur['lib'] = True
+            continue
         m = re.search(r'C[óo]digo de Test\s*0?\s*(\d)', l, re.I)
         if m:
             cur = {'typ': typ, 'lib': lib, 'test': '0' + m.group(1), 'lines': []}
@@ -76,7 +78,7 @@ def parse_answers(name):
         for raw in s['lines']:
             l = raw.strip()
             m = re.match(r'^(\d{1,2})\s*(.*)$', l)
-            if m and (last is None or int(m.group(1)) == last + 1 or int(m.group(1)) == 1):
+            if m and int(m.group(1)) not in ans and (last is None or int(m.group(1)) == last + 1 or int(m.group(1)) == 1):
                 n = int(m.group(1)); rest = m.group(2).strip(); last = n
                 mm = re.match(r'^([A-Da-d])\.?$', rest)
                 ans[n] = mm.group(1).upper() if mm else None   # None = anulada / varias válidas
@@ -91,7 +93,12 @@ def parse_questions(name):
     for s in secs:
         if s['typ'] != 'PER': continue
         qs = []; cur = None; topic = None; expect = 1
+        exp_lines = []
         for raw in s['lines']:
+            l = raw.strip()
+            if re.match(r'^[a-c]\)\s', l): exp_lines += re.split(r'(?<=\S)\s+(?=[b-d]\)\s)', l)
+            else: exp_lines.append(l)
+        for raw in exp_lines:
             l = raw.strip()
             if not l or NOISE.match(l): continue
             nl = norm(l)
@@ -99,6 +106,8 @@ def parse_questions(name):
             if hit and (cur is None or len(cur['o']) == 4):
                 topic = hit; continue
             m = re.match(r'^(\d{1,2})[\.\-]?\s+(\S.*)$', l) or re.match(r'^(\d{1,2})[\.\-]?$', l)
+            if m and cur is not None and len(cur['o']) == 4 and int(m.group(1)) == expect + 1 and re.match(r'^\d{1,2}[\.\-]?\s+[¿A-ZÁÉÍÓÚÑ«“"]', l):
+                expect += 1   # falta una pregunta en el texto del PDF: se salta
             if cur is not None and len(cur['o']) == 4 and (re.match(r'^\d{1,2}[\.\-]?\s+\S', l) or re.match(r'^[a-d]\)', l)) and not (m and int(m.group(1)) == expect):
                 cur['closed'] = True; continue
             if m and int(m.group(1)) == expect and (cur is None or len(cur['o']) == 4):
@@ -133,6 +142,8 @@ for cid, label, en, pl in CONV:
     for key, qs in Q.items():
         test, lib = key
         ans = A.get(key)
+        if test == '00' and cid == '2021-02':
+            test = '05'; ans = A.get(('05', lib))   # el PDF dice «Código de Test 0»; por contenido es el Test 05 de la plantilla
         tag = f"{label} · Test {test}" + (" (PNB liberado)" if lib else "")
         if not ans:
             report.append((tag, len(qs), 'SIN PLANTILLA')); continue
