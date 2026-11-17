@@ -14,3 +14,6 @@ Esta carpeta guarda las piezas con las que se generó, por si hay que rehacer al
 Cambios del 17/11/2026 en `parse_dgmm.py`: ya no se pierde la pregunta 1 (un número de página «1» la anulaba),
 se detecta «(Con PNB Liberado)» en la línea siguiente al código de test, se separan opciones en una misma línea,
 se salta una pregunta que falta en el texto y el «Código de Test 0» de febrero de 2021 es el Test 05 (comprobado por contenido).
+- `mareas_ihm.json` y `mareas_preguntas.json`: datos de marea de cada pregunta (campo `m`), sacados de la API oficial del IHM
+  (`https://ideihm.covam.es/api-ihm/getmarea?request=gettide&id=ID&date=AAAAMMDD`, horas UTC, alturas sobre la sonda de la carta).
+  Comprobado: 26 de 27 respuestas oficiales coinciden; la de Santander (julio 2021, Test 02/04) no cuadra con la plantilla.
